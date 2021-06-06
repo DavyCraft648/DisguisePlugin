@@ -15,12 +15,16 @@ use ArasakaID\Disguise\entity\types\Skeleton;
 use ArasakaID\Disguise\entity\types\Villager;
 use ArasakaID\Disguise\entity\types\Wolf;
 use ArasakaID\Disguise\entity\types\Zombie;
-use ArasakaID\Disguise\entity\Entity as DisguiseEntity;
-use pocketmine\entity\Entity;
+use pocketmine\block\BlockFactory;
+use pocketmine\data\bedrock\EntityLegacyIds;
+use pocketmine\entity\EntityDataHelper;
+use pocketmine\entity\EntityFactory;
+use pocketmine\item\Item;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\PluginBase;
+use pocketmine\world\World;
 
-class Main extends PluginBase
-{
+class Main extends PluginBase {
 
     /** @var Main */
     private static $instance;
@@ -29,8 +33,7 @@ class Main extends PluginBase
         return self::$instance;
     }
 
-    public function onEnable()
-    {
+    public function onEnable(): void {
         self::$instance = $this;
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
         $this->getServer()->getCommandMap()->register($this->getName(), new DisguiseCommand($this));
@@ -38,26 +41,71 @@ class Main extends PluginBase
         $this->checkConfig();
     }
 
-    private function registerEntities(){
-        Entity::registerEntity(FallingBlock::class, true);
-        Entity::registerEntity(ItemEntity::class, true);
-        Entity::registerEntity(Player::class, true);
+    private function registerEntities(): void {
+        /** @var EntityFactory $factory */
+        $factory = EntityFactory::getInstance();
+        $factory->register(FallingBlock::class, function(World $world, CompoundTag $nbt): FallingBlock {
+            return new FallingBlock(null, FallingBlock::parseBlockNBT(BlockFactory::getInstance(), $nbt), false, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+        }, ['disguise:falling_block'], EntityLegacyIds::FALLING_BLOCK);
+
+        $factory->register(ItemEntity::class, function(World $world, CompoundTag $nbt): ItemEntity {
+            $itemTag = $nbt->getCompoundTag("Item");
+            if ($itemTag === null) {
+                throw new \UnexpectedValueException("Expected \"Item\" NBT tag not found");
+            }
+
+            $item = Item::nbtDeserialize($itemTag);
+            if ($item->isNull()) {
+                throw new \UnexpectedValueException("Item is invalid");
+            }
+
+            return new ItemEntity(null, $item, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+        }, ['disguise:item'], EntityLegacyIds::ITEM);
+
+        $factory->register(Player::class, function(World $world, CompoundTag $nbt): Player {
+            return new Player(null, Player::parseSkinNBT($nbt), EntityDataHelper::parseLocation($nbt, $world), $nbt);
+        }, ['disguise:player']);
+
         if ($this->getConfig()->get("disguise-entity")) {
-            Entity::registerEntity(DisguiseEntity::class, true);
-            Entity::registerEntity(Chicken::class, true);
-            Entity::registerEntity(Cow::class, true);
-            Entity::registerEntity(Creeper::class, true);
-            Entity::registerEntity(Pig::class, true);
-            Entity::registerEntity(Sheep::class, true);
-            Entity::registerEntity(Skeleton::class, true);
-            Entity::registerEntity(Villager::class, true);
-            Entity::registerEntity(Wolf::class, true);
-            Entity::registerEntity(Zombie::class, true);
+            $factory->register(Chicken::class, function(World $world, CompoundTag $nbt): Chicken {
+                return new Chicken(null, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            }, ['disguise:chicken']);
+
+            $factory->register(Cow::class, function(World $world, CompoundTag $nbt): Cow {
+                return new Cow(null, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            }, ['disguise:cow']);
+
+            $factory->register(Creeper::class, function(World $world, CompoundTag $nbt): Creeper {
+                return new Creeper(null, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            }, ['disguise:creeper']);
+
+            $factory->register(Pig::class, function(World $world, CompoundTag $nbt): Pig {
+                return new Pig(null, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            }, ['disguise:pig']);
+
+            $factory->register(Sheep::class, function(World $world, CompoundTag $nbt): Sheep {
+                return new Sheep(null, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            }, ['disguise:sheep']);
+
+            $factory->register(Skeleton::class, function(World $world, CompoundTag $nbt): Skeleton {
+                return new Skeleton(null, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            }, ['disguise:skeleton']);
+
+            $factory->register(Villager::class, function(World $world, CompoundTag $nbt): Villager {
+                return new Villager(null, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            }, ['disguise:villager']);
+
+            $factory->register(Wolf::class, function(World $world, CompoundTag $nbt): Wolf {
+                return new Wolf(null, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            }, ['disguise:wolf']);
+
+            $factory->register(Zombie::class, function(World $world, CompoundTag $nbt): Zombie {
+                return new Zombie(null, EntityDataHelper::parseLocation($nbt, $world), $nbt);
+            }, ['disguise:zombie']);
         }
     }
 
-    private function checkConfig()
-    {
+    private function checkConfig(): void {
         if ($this->getConfig()->get("config-version") !== 1.2) {
             rename($this->getDataFolder() . "config.yml", $this->getDataFolder() . "config-old.yml");
             $this->reloadConfig();

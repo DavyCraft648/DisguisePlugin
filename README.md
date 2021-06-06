@@ -1,10 +1,10 @@
-# DisguisePlugin [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FMasApip%2FDisguisePlugin&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com) [![](https://poggit.pmmp.io/shield.state/Disguise)](https://poggit.pmmp.io/p/Disguise)
+# DisguisePlugin
 
 # Description
 Disguised as whatever you want ( Not whatever )
 
 # Installation:
- 1. Download the lastest plugin
+ 1. Download the latest plugin
  2. Put it to your server plugins folder
  3. Restart the server
 
@@ -22,11 +22,11 @@ Disguised as whatever you want ( Not whatever )
 | Sheep | disguise.command.use.sheep |
 | Skeleton | disguise.command.use.skeleton |
 | Villager | disguise.command.use.villager |
-| Wolf` | disguise.command.use.wolf |
+| Wolf | disguise.command.use.wolf |
 | Zombie | disguise.command.use.zombie |
 
 # Config:
-```php
+```yaml
 ---
 # Do not edit this!
 config-version: 1.0
@@ -48,4 +48,4 @@ disguise-as-player: "You have disguised as {TargetName}"
 ```
 
 # Issues:
-If you have error with this plugin, please make a issues on [Here](https://github.com/MasApip/DisguisePlugin/issues/new)
+If you have error with this plugin, please make a new issue on [Here](https://github.com/MasApip/DisguisePlugin/issues/new)

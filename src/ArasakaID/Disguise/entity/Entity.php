@@ -3,38 +3,37 @@
 namespace ArasakaID\Disguise\entity;
 
 use ArasakaID\Disguise\data\PlayerData;
-use pocketmine\entity\Entity as PMEntity;
-use pocketmine\level\Level;
-use pocketmine\math\Vector3;
+use pocketmine\entity\Location;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
-abstract class Entity extends PMEntity{
+abstract class Entity extends \pocketmine\entity\Entity {
 
     /** @var Player|null */
     private $player;
     public $width = 1.3;
     public $height = 1.4;
 
-    public function __construct(Level $level, CompoundTag $nbt, Player $player = null)
-    {
+    public function __construct(?Player $player, Location $location = null, ?CompoundTag $nbt = null) {
         $this->player = $player;
-        parent::__construct($level, $nbt);
+        parent::__construct($player->location ?? $location, $nbt);
     }
 
-    public function entityBaseTick(int $tickDiff = 1): bool
-    {
-        if($this->player === null){
-            return false;
+    public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->player === null) {
+            return parent::entityBaseTick($tickDiff);
         }
+
         $playerData = new PlayerData($this->player);
-        if(!$playerData->isRegistered()){
+        if (!$playerData->isRegistered() || $playerData->getEntityId() != $this->id) {
             return false;
         }
-        $this->setPosition(new Vector3($this->player->getX(), $this->player->getY(), $this->player->getZ()));
-        $this->setRotation($this->player->getYaw(), $this->player->getPitch());
+
+        $this->location = $this->player->location;
         $this->player->setInvisible();
         return true;
     }
+
+    abstract public function getName(): string;
 
 }

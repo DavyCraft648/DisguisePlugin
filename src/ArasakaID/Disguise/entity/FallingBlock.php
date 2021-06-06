@@ -3,12 +3,11 @@
 namespace ArasakaID\Disguise\entity;
 
 use ArasakaID\Disguise\data\PlayerData;
-use ArasakaID\Disguise\Main;
+use pocketmine\block\Block;
+use pocketmine\entity\Location;
 use pocketmine\entity\object\FallingBlock as PMFallingBlock;
-use pocketmine\level\Level;
-use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 class FallingBlock extends PMFallingBlock {
 
@@ -17,33 +16,29 @@ class FallingBlock extends PMFallingBlock {
     /** @var bool */
     private $blockSneak;
 
-    public function __construct(Level $level, CompoundTag $nbt, Player $player = null, bool $blockSneak = false)
-    {
+    public function __construct(?Player $player, Block $block, bool $blockSneak = false, Location $location = null, ?CompoundTag $nbt = null) {
         $this->player = $player;
         $this->blockSneak = $blockSneak;
-        parent::__construct($level, $nbt);
+        parent::__construct($player->location ?? $location, $block, $nbt);
     }
 
-    public function entityBaseTick(int $tickDiff = 1): bool
-    {
-        if($this->player === null){
-            return false;
+    public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->player === null) {
+            return parent::entityBaseTick($tickDiff);
         }
+
         $playerData = new PlayerData($this->player);
-        if(!$playerData->isRegistered()){
+        if (!$playerData->isRegistered() || $playerData->getEntityId() != $this->id) {
             return false;
         }
-        if($this->player->isSneaking() && $this->blockSneak){
+
+        if ($this->player->isSneaking() && $this->blockSneak) {
             return false;
         }
-        $this->setPosition(new Vector3($this->player->getX(), $this->player->getY(), $this->player->getZ()));
+
+        $this->setPosition($this->player->location);
         $this->player->setInvisible();
         return true;
-    }
-
-    public function getName(): string
-    {
-        return "FallingBlock";
     }
 
 }
