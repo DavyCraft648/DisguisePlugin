@@ -31,6 +31,7 @@ class ItemEntity extends PMItemEntity {
 
         $this->setPosition($this->player->location);
         $this->player->setInvisible();
+
         return true;
     }
 

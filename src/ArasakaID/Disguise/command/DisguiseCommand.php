@@ -16,11 +16,18 @@ use ArasakaID\Disguise\entity\types\Villager;
 use ArasakaID\Disguise\entity\types\Wolf;
 use ArasakaID\Disguise\entity\types\Zombie;
 use ArasakaID\Disguise\Main;
+use InvalidArgumentException;
+use pocketmine\block\Air;
+use pocketmine\block\BlockFactory;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
 use pocketmine\item\LegacyStringToItemParser;
 use pocketmine\player\Player;
+use pocketmine\plugin\Plugin;
+use pocketmine\plugin\PluginOwned;
 use pocketmine\utils\TextFormat;
 
-class DisguiseCommand extends \pocketmine\command\Command implements \pocketmine\plugin\PluginOwned {
+class DisguiseCommand extends Command implements PluginOwned {
 
     /** @var Main */
     private $plugin;
@@ -31,7 +38,7 @@ class DisguiseCommand extends \pocketmine\command\Command implements \pocketmine
         $this->setPermission("disguise.command.use");
     }
 
-    public function execute(\pocketmine\command\CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, string $commandLabel, array $args) {
         if (!$this->testPermission($sender) || !($sender instanceof Player)) return;
 
         $playerData = new PlayerData($sender);
@@ -54,17 +61,17 @@ class DisguiseCommand extends \pocketmine\command\Command implements \pocketmine
 
                 try {
                     $block = LegacyStringToItemParser::getInstance()->parse($args[1])->getBlock();
-                } catch (\InvalidArgumentException $e) {
+                } catch (InvalidArgumentException $e) {
                     $sender->sendMessage(TextFormat::RED . "Item block \"$args[1]\" not found!");
                     return;
                 }
-                if ($block instanceof \pocketmine\block\Air) {
+                if ($block instanceof Air) {
                     $sender->sendMessage(TextFormat::RED . "Item must be an Item block!");
                     return;
                 }
 
                 $entity = new FallingBlock($sender,
-                    \pocketmine\block\BlockFactory::getInstance()->get($block->getId(), $block->getMeta()),
+                    BlockFactory::getInstance()->get($block->getId(), $block->getMeta()),
                     $this->plugin->getConfig()->get("disguise-block-sneak"));
                 $entity->setImmobile(); #Don't fall while flying!!!!
                 $entity->spawnToAll();
@@ -82,7 +89,7 @@ class DisguiseCommand extends \pocketmine\command\Command implements \pocketmine
 
                 try {
                     $item = LegacyStringToItemParser::getInstance()->parse($args[1]);
-                } catch (\InvalidArgumentException $e) {
+                } catch (InvalidArgumentException $e) {
                     $sender->sendMessage(TextFormat::RED . "Item \"$args[1]\" not found!");
                     return;
                 }
@@ -236,7 +243,7 @@ class DisguiseCommand extends \pocketmine\command\Command implements \pocketmine
         $sender->sendMessage(TextFormat::RED . "You don't have permission to do this command!");
     }
 
-    public function getOwningPlugin(): \pocketmine\plugin\Plugin {
+    public function getOwningPlugin(): Plugin {
         return $this->plugin;
     }
 

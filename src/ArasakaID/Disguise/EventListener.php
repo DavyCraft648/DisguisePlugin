@@ -7,12 +7,12 @@ use ArasakaID\Disguise\entity\FallingBlock;
 use ArasakaID\Disguise\entity\ItemEntity;
 use pocketmine\entity\Entity;
 use pocketmine\event\inventory\InventoryPickupItemEvent;
-use pocketmine\event\player\PlayerToggleSneakEvent;
-use pocketmine\math\Vector3;
-use pocketmine\player\Player as PMPlayer;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\player\PlayerToggleSneakEvent;
+use pocketmine\math\Vector3;
+use pocketmine\player\Player as PMPlayer;
 use pocketmine\utils\TextFormat;
 
 class EventListener implements Listener {

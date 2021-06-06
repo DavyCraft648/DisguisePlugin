@@ -7,12 +7,12 @@ use pocketmine\player\Player;
 
 class PlayerData {
 
-    /** @var Player */
-    private $player;
     /** @var int[] */
     private static $entityId = [];
     /** @var Player[] */
     private static $fakePlayer = [];
+    /** @var Player */
+    private $player;
 
     public function __construct(Player $player) {
         $this->player = $player;

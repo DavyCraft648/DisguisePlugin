@@ -23,6 +23,7 @@ use pocketmine\item\Item;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\world\World;
+use UnexpectedValueException;
 
 class Main extends PluginBase {
 
@@ -51,12 +52,12 @@ class Main extends PluginBase {
         $factory->register(ItemEntity::class, function(World $world, CompoundTag $nbt): ItemEntity {
             $itemTag = $nbt->getCompoundTag("Item");
             if ($itemTag === null) {
-                throw new \UnexpectedValueException("Expected \"Item\" NBT tag not found");
+                throw new UnexpectedValueException("Expected \"Item\" NBT tag not found");
             }
 
             $item = Item::nbtDeserialize($itemTag);
             if ($item->isNull()) {
-                throw new \UnexpectedValueException("Item is invalid");
+                throw new UnexpectedValueException("Item is invalid");
             }
 
             return new ItemEntity(null, $item, EntityDataHelper::parseLocation($nbt, $world), $nbt);

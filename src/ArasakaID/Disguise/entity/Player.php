@@ -3,11 +3,11 @@
 namespace ArasakaID\Disguise\entity;
 
 use ArasakaID\Disguise\data\PlayerData;
+use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player as PMPlayer;
-use pocketmine\entity\Human;
 
 class Player extends Human {
 
@@ -24,6 +24,7 @@ class Player extends Human {
             if (!$this->isFlaggedForDespawn()) {
                 $this->flagForDespawn();
             }
+
             return false;
         }
 
@@ -32,10 +33,12 @@ class Player extends Human {
             if (!$this->isFlaggedForDespawn()) {
                 $this->flagForDespawn();
             }
+
             return false;
         }
 
         $this->setInvisible();
+
         return true;
     }
 

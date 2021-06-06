@@ -11,8 +11,6 @@ abstract class Entity extends \pocketmine\entity\Entity {
 
     /** @var Player|null */
     private $player;
-    public $width = 1.3;
-    public $height = 1.4;
 
     public function __construct(?Player $player, Location $location = null, ?CompoundTag $nbt = null) {
         $this->player = $player;
@@ -31,6 +29,7 @@ abstract class Entity extends \pocketmine\entity\Entity {
 
         $this->location = $this->player->location;
         $this->player->setInvisible();
+
         return true;
     }
 

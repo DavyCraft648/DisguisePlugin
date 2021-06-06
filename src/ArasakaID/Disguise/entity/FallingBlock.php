@@ -38,6 +38,7 @@ class FallingBlock extends PMFallingBlock {
 
         $this->setPosition($this->player->location);
         $this->player->setInvisible();
+
         return true;
     }
 
